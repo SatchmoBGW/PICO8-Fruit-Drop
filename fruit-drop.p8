@@ -1,22 +1,39 @@
 pico-8 cartridge // http://www.pico-8.com
 version 27
 __lua__
+//inits
+
+//variables
 basket_sprite=1
 player_sprite=2
-
 player_x=64
 player_y=100
-
 fruits={}
 fruit_start=3
 fruit_count=6
 fruit_interval=16
-
 gravity=1
 level=1
 points=0
 
 function _init()
+	init_menu()
+end
+
+function init_menu()
+	_update=update_menu
+	_draw=draw_menu
+end
+
+function init_game()
+	_update=update_game
+	_draw=draw_game
+	make_fruit()
+end
+
+function make_fruit()
+	
+	//create fruit
 	for i=1, level do
 		fruit={
 			sprite=flr(rnd(fruit_count)+fruit_start),
@@ -26,10 +43,22 @@ function _init()
 		add(fruits,fruit)
 	end
 end
+-->8
+//updates
 
-function _update()
+function update_menu()
+	if btnp(❎) then
+		init_game()
+	end
+end
+
+function update_game()
+	//player controls
 	if btn(⬅️) then player_x-=2 end
 	if btn(➡️) then player_x+=2 end
+	if btnp(❎) then init_menu() end
+	
+	//player collision detection
 	if player_x<=0 then player_x=0 end
 	if player_x>=119 then player_x=119 end
 
@@ -48,11 +77,19 @@ function _update()
 	end
 	if #fruits==0 then
 		level +=1
-		_init()
+		make_fruit()
 	end
 end
+-->8
+//draws
 
-function _draw()
+function draw_menu()
+	cls()
+	print("✽fruit drop✽ ver.1.1",20,20)
+	print("press ❎ to start",30,60)
+end
+
+function draw_game()
 	cls()
 	rectfill(0,108,127,127,3)
 	spr(player_sprite,player_x,player_y)
